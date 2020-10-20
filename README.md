@@ -1,7 +1,7 @@
 ## CS300 -- PROJECT 2 -- CONWAY'S GAME OF LIFE
 #Lawrence Scroggs -- 10/20/20
 
-:+1
+:+1:
 
 :octocat:
 
