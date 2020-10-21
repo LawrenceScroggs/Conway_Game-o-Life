@@ -16,9 +16,40 @@
 
 using namespace std;
 
+
 int main(){
 
+  int x = COLS - 1;
+  int y = LINES - 1;
+
+  char lifebox[x][y];
+
+  for(int i = 0; i < y; ++i){
+    for(int j = 0; j < x; ++j){
+
+      lifebox[x][y] = ' ';
+    }
+  }
+  keypad(stdscr,true);
 
   return 0;
 
 }
+struct cell{
+
+  // life value
+  bool life = false;
+  // is there an x
+  char x = ' ';
+ 
+  /* keeps tracks of neighbors
+  int n1; 
+  int n2; 
+  int n3; 
+  int n4; 
+  int n5; 
+  int n6; 
+  int n7; 
+  int n8; */
+
+};
