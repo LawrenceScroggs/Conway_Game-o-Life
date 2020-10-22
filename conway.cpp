@@ -19,8 +19,10 @@ using namespace std;
 
 int main(){
 
-  int x = COLS - 1;
-  int y = LINES - 1;
+  initscr();
+
+  int x = COLS;
+  int y = LINES;
 
   int cell = ' ';
 
@@ -33,25 +35,23 @@ int main(){
     }
   }
 
-  initscr();
 
-  WINDOW * window = newwin(y,x,5,5);
+  WINDOW * window = newwin(y,x,0,0);
   refresh();
 
-  wborder(window,35,35,35,35,35,35,35,35);
-  printw("hello ");
+  cell = getch();
+  mvwprintw(window,y/2,x/2,"Cell: %d",cell);
+  refresh();
   wrefresh(window);
+
   keypad(stdscr,true);
-  cell = mvgetch(x,y);
-
-  cout <<  cell << ' ' << lifebox[0][0] << "\n";
 
 
-  refresh();
 
   endwin();
 
 
+  cout <<  cell << ' ' << lifebox[0][0] << "\n";
   
 
   return 0;
