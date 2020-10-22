@@ -22,6 +22,8 @@ int main(){
   int x = COLS - 1;
   int y = LINES - 1;
 
+  int cell = ' ';
+
   char lifebox[x][y];
 
   for(int i = 0; i < y; ++i){
@@ -30,7 +32,27 @@ int main(){
       lifebox[x][y] = ' ';
     }
   }
+
+  initscr();
+
+  WINDOW * window = newwin(y,x,5,5);
+  refresh();
+
+  wborder(window,35,35,35,35,35,35,35,35);
+  printw("hello ");
+  wrefresh(window);
   keypad(stdscr,true);
+  cell = mvgetch(x,y);
+
+  cout <<  cell << ' ' << lifebox[0][0] << "\n";
+
+
+  refresh();
+
+  endwin();
+
+
+  
 
   return 0;
 
