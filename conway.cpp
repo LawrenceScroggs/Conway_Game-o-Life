@@ -20,11 +20,13 @@ using namespace std;
 int main(){
 
   initscr();
+  keypad(stdscr,true);
 
   int x = COLS;
   int y = LINES;
 
   int cell = ' ';
+  int cursor = 1;
 
   char lifebox[x][y];
 
@@ -35,23 +37,37 @@ int main(){
     }
   }
 
-
   WINDOW * window = newwin(y,x,0,0);
   refresh();
 
-  cell = getch();
   mvwprintw(window,y/2,x/2,"Cell: %d",cell);
-  refresh();
+  print_menu(window,cursor);
   wrefresh(window);
 
-  keypad(stdscr,true);
+  while(cell != 2)
+  {
+    cell = wgetch(window);
+    switch(cell)
+    {
+          case KEY_UP:
+                  if(cursor < 0)
+                    break;
+                  else
+                    ++cursor;
+                  break;
+          case KEY_DOWN:
+                  if(cursor > y)
+                    break;
+                  else
+                    --cursor;
+    }
+                    
 
 
 
   endwin();
 
 
-  cout <<  cell << ' ' << lifebox[0][0] << "\n";
   
 
   return 0;
