@@ -13,6 +13,24 @@
 
 #include <iostream>
 #include <ncurses.h>
+struct cells{
+
+  // life value
+  bool life = false;
+  // is there an x
+  int x = 1;
+ 
+  /* keeps tracks of neighbors
+  int n1; 
+  int n2; 
+  int n3; 
+  int n4; 
+  int n5; 
+  int n6; 
+  int n7; 
+  int n8; */
+
+};
 
 using namespace std;
 
@@ -20,13 +38,18 @@ using namespace std;
 int main(){
 
   initscr();
-  keypad(stdscr,true);
+  keypad(stdscr,TRUE);
+  noecho();
+  cbreak();
 
   int x = COLS;
   int y = LINES;
 
-  int cell = ' ';
-  int cursor = 1;
+  int cell_y = 23;
+  int cell_x = 23;
+
+  int cell = 1;
+  //int cursor = 1;
 
   char lifebox[x][y];
 
@@ -40,54 +63,73 @@ int main(){
   WINDOW * window = newwin(y,x,0,0);
   refresh();
 
-  mvwprintw(window,y/2,x/2,"Cell: %d",cell);
-  print_menu(window,cursor);
-  wrefresh(window);
+  wmove(window,cell_y,cell_x);
+
+  //mvwprintw(window,y/2,x/2,"Cell: %d",cell);
+  //wrefresh(window);
 
   while(cell != 2)
   {
-    cell = wgetch(window);
-    switch(cell)
-    {
+    cell = getch();
+    switch(cell) {
           case KEY_UP:
-                  if(cursor < 0)
-                    break;
+                  if((cell_y-1) < 0)
+                    cell_y = cell_y;
                   else
-                    ++cursor;
+                  {
+                    --cell_y;
+                    wmove(window,cell_y,cell_x);
+                  }
+                  wrefresh(window);
                   break;
+
           case KEY_DOWN:
-                  if(cursor > y)
-                    break;
+                  if((cell_y+1) > y)
+                    cell_y = cell_y;
                   else
-                    --cursor;
+                  {
+                    ++cell_y;
+                    wmove(window,cell_y,cell_x);
+                  }
+                  wrefresh(window);
+                  break;
+
+          case KEY_RIGHT:
+                  if((cell_x+1) > x)
+                    cell_x = cell_x;
+                  else
+                  {
+                    ++cell_x;
+                    wmove(window,cell_y,cell_x);
+                  }
+                  wrefresh(window);
+                    break;
+
+          case KEY_LEFT:
+                  if((cell_x-1) < 0)
+                    cell_x = cell_x;
+                  else
+                  {
+                    --cell_x;
+                    wmove(window,cell_y,cell_x);
+                  }
+                  wrefresh(window);
+                  break;
+          default:
+                  break;
     }
+    refresh();
+    wrefresh(window);
                     
-
-
+  } 
 
   endwin();
-
-
-  
 
   return 0;
 
 }
-struct cell{
+int move_cell(struct cells,int cell_y,int cell_x)
+{
+  return 0;
 
-  // life value
-  bool life = false;
-  // is there an x
-  char x = ' ';
- 
-  /* keeps tracks of neighbors
-  int n1; 
-  int n2; 
-  int n3; 
-  int n4; 
-  int n5; 
-  int n6; 
-  int n7; 
-  int n8; */
-
-};
+}
