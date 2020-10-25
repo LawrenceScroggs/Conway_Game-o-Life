@@ -34,6 +34,7 @@ struct cells{
 };
 
 using namespace std;
+int run_life(cells lifebox,int cell_y,int cell_x);
 
 
 int main(){
@@ -117,6 +118,12 @@ int main(){
                   wrefresh(window);
                   break;
           case 'x':
+                  waddch(window,'X');
+                  lifebox[cell_x][cell_y].life = true;
+                  run_life(lifebox[cell_x][cell_y],x,y);
+                  wrefresh(window);
+                  break;
+          case 'p':
                   break;
           default:
                   break;
@@ -131,8 +138,9 @@ int main(){
   return 0;
 
 }
-int move_cell(struct cells,int cell_y,int cell_x)
+int run_life(cells lifebox,int cell_y,int cell_x)
 {
+
   return 0;
 
 }
