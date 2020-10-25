@@ -18,7 +18,8 @@ struct cells{
   // life value
   bool life = false;
   // is there an x
-  int x = 1;
+  int x_loc = 0;
+  int y_loc = 0;
  
   /* keeps tracks of neighbors
   int n1; 
@@ -45,18 +46,18 @@ int main(){
   int x = COLS;
   int y = LINES;
 
-  int cell_y = 23;
-  int cell_x = 23;
+  int cell_y = y/2;
+  int cell_x = x/2; 
 
   int cell = 1;
   //int cursor = 1;
 
-  char lifebox[x][y];
+  cells lifebox[x][y];
 
   for(int i = 0; i < y; ++i){
     for(int j = 0; j < x; ++j){
-
-      lifebox[x][y] = ' ';
+      lifebox[x][y].x_loc = x;
+      lifebox[x][y].y_loc = y;
     }
   }
 
@@ -68,7 +69,7 @@ int main(){
   //mvwprintw(window,y/2,x/2,"Cell: %d",cell);
   //wrefresh(window);
 
-  while(cell != 2)
+  while(cell != 'q')
   {
     cell = getch();
     switch(cell) {
@@ -114,6 +115,8 @@ int main(){
                     wmove(window,cell_y,cell_x);
                   }
                   wrefresh(window);
+                  break;
+          case 'x':
                   break;
           default:
                   break;
