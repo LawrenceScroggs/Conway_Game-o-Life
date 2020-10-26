@@ -34,31 +34,42 @@ struct cells{
 };
 
 using namespace std;
-int run_life(cells lifebox,int cell_y,int cell_x);
+int run_life(int x,int y,cells **);
 
 
 int main(){
 
   initscr();
-  keypad(stdscr,TRUE);
-  noecho();
-  cbreak();
+  keypad(stdscr,TRUE);  // enables keypad
+  noecho();  // wont print user input to screen
+  cbreak();  // allows only one character to be held with input
 
+  // size of terminal
   int x = COLS;
   int y = LINES;
 
+  // keeps track of the cursor
   int cell_y = y/2;
   int cell_x = x/2; 
 
   int cell = 1;
   //int cursor = 1;
 
-  cells lifebox[x][y];
+  //cells lifebox[x][y];
+  cells **lifebox;
+  lifebox = new cells* [x];
+  for(int i = 0; i < x; ++x)
+    lifebox[i] = new cells[y];
 
-  for(int i = 0; i < y; ++i){
-    for(int j = 0; j < x; ++j){
-      lifebox[x][y].x_loc = x;
-      lifebox[x][y].y_loc = y;
+
+
+  for(int i = 0; i < x; ++i)
+  {
+    for(int j = 0; j < y; ++j)
+    {
+
+      lifebox[i][j].x_loc = x;
+      lifebox[i][j].y_loc = y;
     }
   }
 
@@ -66,9 +77,6 @@ int main(){
   refresh();
 
   wmove(window,cell_y,cell_x);
-
-  //mvwprintw(window,y/2,x/2,"Cell: %d",cell);
-  //wrefresh(window);
 
   while(cell != 'q')
   {
@@ -120,10 +128,10 @@ int main(){
           case 'x':
                   waddch(window,'X');
                   lifebox[cell_x][cell_y].life = true;
-                  run_life(lifebox[cell_x][cell_y],x,y);
                   wrefresh(window);
                   break;
           case 'p':
+                  run_life(x,y,lifebox);
                   break;
           default:
                   break;
@@ -138,8 +146,45 @@ int main(){
   return 0;
 
 }
-int run_life(cells lifebox,int cell_y,int cell_x)
+int run_life(int x, int y, cells** lifebox)
 {
+  int neighbors = 0;
+
+  for(int i = 0; i < y; ++i)
+  {
+    for(int j = 0; j < x; ++j)
+    {
+      if((i-1) >= 0 && lifebox[i-1][j].life == true)
+        ++neighbors;
+      if((i+1) <= x && lifebox[i+1][j].life == true)
+        ++neighbors;
+      if((j+1) <= y && lifebox[i][j+1].life == true)
+        ++neighbors;
+      if((j-1) >= 0 && lifebox[i][y-1].life == true)
+        ++neighbors;
+      if((i-1) >= 0 && (j+1) >= y && lifebox[i-1][j+1].life == true)
+        ++neighbors;
+      if((i+1) <= x && (j+1) <= y && lifebox[i+1][j+1].life == true)
+        ++neighbors;
+      if((i-1) >= 0 && (j-1) >= 0 && lifebox[i-1][j-1].life == true)
+        ++neighbors;
+      if((i+1) <= x && (j-1) >= 0 && lifebox[x+1][y-1].life == true)
+        ++neighbors;
+
+      if(neighbors >= 4)
+        lifebox[i][j].life = false;
+      else if(neighbors == 2 || neighbors == 3)
+        lifebox[i][j].life = true;
+      else if(neighbors == 1 || neighbors == 0)
+        lifebox[i][j].life = false;
+      else
+        lifebox[i][j].life = true;
+
+      neighbors = 0;
+    
+    }
+  }
+
 
   return 0;
 
