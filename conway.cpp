@@ -13,27 +13,28 @@
 
 #include <iostream>
 #include <ncurses.h>
+#include <unistd.h>  // used for sleep
 struct cells{
 
   // life value
   bool life = false;
-  // is there an x
+  // locations on grid
   int x_loc = 0;
   int y_loc = 0;
 
+  // each cells neighbor count
   int neighbors = 0;
 
 };
 
 using namespace std;
-int run_life(int,int, cells **);
-int print_life(int ,int , cells **);
-bool pause_life(int pause);
+int run_life(int,int, cells **);  // counts neighbors
+int pause_life();  // pauses a game
 
 
 int main(){
 
-  initscr();
+  initscr();  // initialize the screen
   keypad(stdscr,TRUE);  // enables keypad
   noecho();  // wont print user input to screen
   cbreak();  // allows only one character to be held with input
@@ -49,16 +50,17 @@ int main(){
   int cell_y = y/2;
   int cell_x = x/2; 
 
+  // controls the cursor
   int cell = ' ';
-  int pause = ' ';
 
-  //cells lifebox[x][y];
+  //cells lifebox[x][y] initialize;
   cells **lifebox;
   lifebox = new cells* [x];
   for(int i = 0; i < x; ++i)
     lifebox[i] = new cells[y];
 
 
+  //set locations to grid
   for(int i = 0; i < x; ++i)
   {
     for(int j = 0; j < y; ++j)
@@ -69,11 +71,17 @@ int main(){
   }
   
 
+  //create a new window the size of the terminal
   WINDOW * window = newwin(y,x,0,0);
   refresh();
+  
+  nodelay(window,true);
+  scrollok(window,true);
 
+  //set window to 0, 0
   wmove(window,cell_y,cell_x);
 
+  // loop to control the game of life
   while(cell != 'q')
   {
     cell = getch();
@@ -81,6 +89,7 @@ int main(){
       cell = 'p';
     switch(cell) {
           case KEY_UP:
+                  //if the cell reaches ceiling
                   if((cell_y-1) < 0)
                     cell_y = cell_y;
                   else
@@ -92,6 +101,7 @@ int main(){
                   break;
 
           case KEY_DOWN:
+                  //if the cell reaches floor
                   if((cell_y+1) > y)
                     cell_y = cell_y;
                   else
@@ -103,6 +113,7 @@ int main(){
                   break;
 
           case KEY_RIGHT:
+                  //if cell reaches right wall
                   if((cell_x+1) > x)
                     cell_x = cell_x;
                   else
@@ -114,6 +125,7 @@ int main(){
                     break;
 
           case KEY_LEFT:
+                  //if the cell reaches left wall
                   if((cell_x-1) < 0)
                     cell_x = cell_x;
                   else
@@ -124,8 +136,11 @@ int main(){
                   wrefresh(window);
                   break;
           case 'x':
+                  //adds the x and moves to the screen
                   waddch(window,'X');
+                  //updates the life of the cell 
                   lifebox[cell_x][cell_y].life = true;
+                  //keeps cursor on the cell
                   wmove(window,cell_y,cell_x);
                   wrefresh(window);
                   break;
@@ -146,11 +161,22 @@ int main(){
                         mvwaddch(window,j,i,' ');
                       }
                       else
-                        wmove(window,y,x);
+                            wmove(window,y,x);
+                      }
                     }
-                  }
                   wrefresh(window);
-                  halfdelay(5);
+                  if(pause_life())
+                  {
+                    cell = 'n';
+                    refresh();
+                    break;
+                  }
+                  else
+                  {
+                    cell = 'p';
+                    refresh();
+                    sleep(.5);
+                  }
                   break;
           case 'n':
                   run_life(x,y,lifebox);
@@ -184,14 +210,26 @@ int main(){
 
   endwin();
 
+  //delete array
+  for(int i = 0;i < x;++i)
+    delete [] lifebox[i];
+
+  delete [] lifebox;
+
   return 0;
-
 }
-bool pause_life(int pause){
+//https://stackoverflow.com/questions/4025891/create-a-function-to-check-for-key-press-in-unix
+//-using-ncurses
+int pause_life(){
 
-  if(pause == 'p')
-    return true;
-
+  int ch = getch();
+  if(ch != ERR)
+  {
+    ungetch(ch);
+    return 1;
+  }
+  else
+    return 0;
 }
 
 int run_life(int x, int y, cells** lifebox)
