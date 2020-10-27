@@ -49,7 +49,7 @@ int main(){
   int cell_x = x/2; 
 
   int cell = ' ';
-  //int cursor = 1;
+  int pause = ' ';
 
   //cells lifebox[x][y];
   cells **lifebox;
@@ -134,14 +134,28 @@ int main(){
                   {
                     for(int j = 0; j < y; ++j)
                     {
-                      if(lifebox[i][j].life == true && lifebox[i][j].neighbors == 3)
+                      if(lifebox[i][j].neighbors == 3)
+                      {
+                        lifebox[i][j].life = true;
                         mvwaddch(window,j,i,'X');
-                      else
+                      }
+                      else if(lifebox[i][j].neighbors > 3 || lifebox[i][j].neighbors < 2)
+                      {
+                        lifebox[i][j].life = false;
                         mvwaddch(window,j,i,' ');
+                      }
+                      else
+                        wmove(window,y,x);
                     }
-                    wrefresh(window);
                   }
-                  nodelay(stdscr,true);
+                  wrefresh(window);
+                  pause = getch();
+                  if(pause == 'p')
+                  {
+                    cell = 'n';
+                    break;
+                  }
+                  halfdelay(5);
 
                   break;
           case 'n':
@@ -150,17 +164,21 @@ int main(){
                   {
                     for(int j = 0; j < y; ++j)
                     {
-                      if(lifebox[i][j].life == true && lifebox[i][j].neighbors == 3)
+                      if(lifebox[i][j].neighbors == 3)
+                      {
+                        lifebox[i][j].life = true;
                         mvwaddch(window,j,i,'X');
-                      else if(lifebox[i][j].life == true && lifebox[i][j].neighbors == 2)
-                        mvwaddch(window,j,i,'X');
-                      else if(lifebox[i][j].life == false || lifebox[i][j].neighbors > 3)
+                      }
+                      else if(lifebox[i][j].neighbors > 3 || lifebox[i][j].neighbors < 2)
+                      {
+                        lifebox[i][j].life = false;
                         mvwaddch(window,j,i,' ');
+                      }
                       else
-                        mvwaddch(window,j,i,' ');
+                        wmove(window,y,x);
                     }
-                    wrefresh(window);
                   }
+                  wrefresh(window);
                   break;
           default:
                   break;
@@ -202,13 +220,6 @@ int run_life(int x, int y, cells** lifebox)
         lifebox[i][j].neighbors += 1;
       if((i+1) <= x && (j-1) >= 0 && lifebox[i+1][j-1].life == true)
         lifebox[i][j].neighbors += 1;
-
-      if(lifebox[i][j].neighbors >= 4)
-        lifebox[i][j].life = false;
-      else if(lifebox[i][j].neighbors == 3)
-        lifebox[i][j].life = true;
-      else if(lifebox[i][j].neighbors == 1 || lifebox[i][j].neighbors == 0)
-        lifebox[i][j].life = false;
 
     
     }
