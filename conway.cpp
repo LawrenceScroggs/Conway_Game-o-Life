@@ -28,6 +28,7 @@ struct cells{
 using namespace std;
 int run_life(int,int, cells **);
 int print_life(int ,int , cells **);
+bool pause_life(int pause);
 
 
 int main(){
@@ -149,14 +150,7 @@ int main(){
                     }
                   }
                   wrefresh(window);
-                  pause = getch();
-                  if(pause == 'p')
-                  {
-                    cell = 'n';
-                    break;
-                  }
                   halfdelay(5);
-
                   break;
           case 'n':
                   run_life(x,y,lifebox);
@@ -191,6 +185,12 @@ int main(){
   endwin();
 
   return 0;
+
+}
+bool pause_life(int pause){
+
+  if(pause == 'p')
+    return true;
 
 }
 
