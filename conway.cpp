@@ -52,6 +52,8 @@ int main(){
 
   // controls the cursor
   int cell = ' ';
+  int quit = 1;
+  int pause = ERR;
 
   //cells lifebox[x][y] initialize;
   cells **lifebox;
@@ -73,20 +75,21 @@ int main(){
 
   //create a new window the size of the terminal
   WINDOW * window = newwin(y,x,0,0);
+ 
   refresh();
-  
-  nodelay(window,true);
-  scrollok(window,true);
 
   //set window to 0, 0
   wmove(window,cell_y,cell_x);
 
   // loop to control the game of life
-  while(cell != 'q')
-  {
+  while(quit == 1){
+
     cell = getch();
+    if(cell == 'q')
+      --quit;
     if(cell == ERR)
       cell = 'p';
+
     switch(cell) {
           case KEY_UP:
                   //if the cell reaches ceiling
@@ -164,19 +167,19 @@ int main(){
                             wmove(window,y,x);
                       }
                     }
-                  wrefresh(window);
-                  if(pause_life())
+                  halfdelay(5);
+              /*    pause = getch();
+                  if(pause == 'p')
                   {
                     cell = 'n';
                     refresh();
                     break;
-                  }
-                  else
+                  } 
+                  else if(pause == ERR)
                   {
                     cell = 'p';
                     refresh();
-                    sleep(.5);
-                  }
+                  }*/
                   break;
           case 'n':
                   run_life(x,y,lifebox);
@@ -220,16 +223,9 @@ int main(){
 }
 //https://stackoverflow.com/questions/4025891/create-a-function-to-check-for-key-press-in-unix
 //-using-ncurses
-int pause_life(){
+int pause_life(int pause){
 
-  int ch = getch();
-  if(ch != ERR)
-  {
-    ungetch(ch);
-    return 1;
-  }
-  else
-    return 0;
+  return 0;
 }
 
 int run_life(int x, int y, cells** lifebox)
