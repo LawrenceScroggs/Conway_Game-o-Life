@@ -13,24 +13,18 @@
 
 #include <iostream>
 #include <ncurses.h>
-#include <unistd.h>  // used for sleep
 struct cells{
-
   // life value
   bool life = false;
   // locations on grid
   int x_loc = 0;
   int y_loc = 0;
-
   // each cells neighbor count
   int neighbors = 0;
-
 };
 
 using namespace std;
 int run_life(int,int, cells **);  // counts neighbors
-int pause_life();  // pauses a game
-
 
 int main(){
 
@@ -72,7 +66,6 @@ int main(){
     }
   }
   
-
   //create a new window the size of the terminal
   WINDOW * window = newwin(y,x,0,0);
  
@@ -86,16 +79,8 @@ int main(){
 
     cell = getch();
      
-    if(cell == ERR)
-      cell = 'P';
-    else if(cell == 'q')
+    if(cell == 'q')
         --quit;
-    else if(cell != ERR && cell == 'p')
-        ++pause;
-   
-    if(pause == 1)
-      cell = 'n';
-
     switch(cell) {
           case KEY_UP:
                   //if the cell reaches ceiling
@@ -154,28 +139,35 @@ int main(){
                   wrefresh(window);
                   break;
           case 'p':
-                  run_life(x,y,lifebox);
-                  for(int i = 0; i < x; ++i)
-                  {
-                    for(int j = 0; j < y; ++j)
+                  pause = ERR;  // set new int to ERR
+                  while(pause == ERR){  // while loop waiting on half delay
+                    run_life(x,y,lifebox);
+                    for(int i = 0; i < x; ++i)
                     {
-                      if(lifebox[i][j].neighbors == 3)
+                      for(int j = 0; j < y; ++j)
                       {
-                        lifebox[i][j].life = true;
-                        mvwaddch(window,j,i,'X');
+                        if(lifebox[i][j].neighbors == 3)
+                        {
+                          lifebox[i][j].life = true;
+                          mvwaddch(window,j,i,'X');
+                        }
+                        else if(lifebox[i][j].neighbors > 3 || lifebox[i][j].neighbors < 2)
+                        {
+                          lifebox[i][j].life = false;
+                          mvwaddch(window,j,i,' ');
+                        }
+                        else
+                              wmove(window,y,x);
+                        }
                       }
-                      else if(lifebox[i][j].neighbors > 3 || lifebox[i][j].neighbors < 2)
-                      {
-                        lifebox[i][j].life = false;
-                        mvwaddch(window,j,i,' ');
-                      }
-                      else
-                            wmove(window,y,x);
-                      }
-                    }
-                  halfdelay(5);
+                    halfdelay(5);  // set to .5 second
+                    refresh();
+                    wrefresh(window);
+                    pause = getch(); // if nothing is pressed pause will remain ERR
+                  }
                   break;
           case 'n':
+                  // one step
                   run_life(x,y,lifebox);
                   for(int i = 0; i < x; ++i)
                   {
@@ -197,28 +189,6 @@ int main(){
                   }
                   wrefresh(window);
                   break;
-          /*case 'P':
-                  run_life(x,y,lifebox);
-                  for(int i = 0; i < x; ++i)
-                  {
-                    for(int j = 0; j < y; ++j)
-                    {
-                      if(lifebox[i][j].neighbors == 3)
-                      {
-                        lifebox[i][j].life = true;
-                        mvwaddch(window,j,i,'X');
-                      }
-                      else if(lifebox[i][j].neighbors > 3 || lifebox[i][j].neighbors < 2)
-                      {
-                        lifebox[i][j].life = false;
-                        mvwaddch(window,j,i,' ');
-                      }
-                      else
-                            wmove(window,y,x);
-                      }
-                    }
-                  halfdelay(5);
-                  break;*/
           default:
                   break;
     refresh();
@@ -237,21 +207,9 @@ int main(){
 
   return 0;
 }
-//https://stackoverflow.com/questions/4025891/create-a-function-to-check-for-key-press-in-unix
-//-using-ncurses
-int pause_life(int cell){
-
-  int ch;
-  
-  if(cell)
-    return 0;
-
-
-  return 0;
-}
-
 int run_life(int x, int y, cells** lifebox)
 {
+  // keep in bounds of array
   --x;
   --y;
 
@@ -276,11 +234,8 @@ int run_life(int x, int y, cells** lifebox)
         lifebox[i][j].neighbors += 1;
       if((i+1) <= x && (j-1) >= 0 && lifebox[i+1][j-1].life == true)
         lifebox[i][j].neighbors += 1;
-
-    
     }
   }
-
 
   return 0;
 
