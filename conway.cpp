@@ -53,7 +53,7 @@ int main(){
   // controls the cursor
   int cell = ' ';
   int quit = 1;
-  int pause = ERR;
+  int pause = 0;
 
   //cells lifebox[x][y] initialize;
   cells **lifebox;
@@ -85,10 +85,16 @@ int main(){
   while(quit == 1){
 
     cell = getch();
-    if(cell == 'q')
-      --quit;
+     
     if(cell == ERR)
-      cell = 'p';
+      cell = 'P';
+    else if(cell == 'q')
+        --quit;
+    else if(cell != ERR && cell == 'p')
+        ++pause;
+   
+    if(pause == 1)
+      cell = 'n';
 
     switch(cell) {
           case KEY_UP:
@@ -168,18 +174,6 @@ int main(){
                       }
                     }
                   halfdelay(5);
-              /*    pause = getch();
-                  if(pause == 'p')
-                  {
-                    cell = 'n';
-                    refresh();
-                    break;
-                  } 
-                  else if(pause == ERR)
-                  {
-                    cell = 'p';
-                    refresh();
-                  }*/
                   break;
           case 'n':
                   run_life(x,y,lifebox);
@@ -203,11 +197,33 @@ int main(){
                   }
                   wrefresh(window);
                   break;
+          /*case 'P':
+                  run_life(x,y,lifebox);
+                  for(int i = 0; i < x; ++i)
+                  {
+                    for(int j = 0; j < y; ++j)
+                    {
+                      if(lifebox[i][j].neighbors == 3)
+                      {
+                        lifebox[i][j].life = true;
+                        mvwaddch(window,j,i,'X');
+                      }
+                      else if(lifebox[i][j].neighbors > 3 || lifebox[i][j].neighbors < 2)
+                      {
+                        lifebox[i][j].life = false;
+                        mvwaddch(window,j,i,' ');
+                      }
+                      else
+                            wmove(window,y,x);
+                      }
+                    }
+                  halfdelay(5);
+                  break;*/
           default:
                   break;
-    }
     refresh();
     wrefresh(window);
+    }
                     
   } 
 
@@ -223,7 +239,13 @@ int main(){
 }
 //https://stackoverflow.com/questions/4025891/create-a-function-to-check-for-key-press-in-unix
 //-using-ncurses
-int pause_life(int pause){
+int pause_life(int cell){
+
+  int ch;
+  
+  if(cell)
+    return 0;
+
 
   return 0;
 }
