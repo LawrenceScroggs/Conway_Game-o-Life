@@ -5,6 +5,8 @@ __Lawrence Scroggs -- 10/20/20__
 
 :octocat: :octocat: :octocat:
 
+*When starting the game the cursor will appear in middle of terminal*
+
 __RULES FOR THE GAME OF LIFE__
 
 For a space that is Populated:
