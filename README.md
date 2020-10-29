@@ -8,7 +8,7 @@ __Lawrence Scroggs -- 10/20/20__
 __RULES FOR THE GAME OF LIFE__
 
 For a space that is Populated:
-> *[1]Each cell with one or ne neighbors dies, as if by solitude.*
+> Each cell with one or ne neighbors dies, as if by solitude.\n
 > *[2]Each cell with four or more neighbors dies, as if by overpopulation.*
 > *[3]Each cell with two or three neighbors survives.*
 
